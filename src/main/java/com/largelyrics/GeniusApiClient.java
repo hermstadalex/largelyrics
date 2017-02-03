@@ -24,7 +24,8 @@ public final class GeniusApiClient {
     private final String artistEndpoint = "/artists/";
     private final String songEndpoint = "/songs?per_page=";
     private final int songsPerPage = 50;
-    private final String songReferentEndpoint = "/referents?song_id=";
+    private final String songReferentEndpoint = "/referents?";
+    private final String referentOptions = "per_page=50&text_format=plain&song_id=";
 
     private final JSONObject run(String url) throws Exception {
         Request newRequest = new Request.Builder()
@@ -59,7 +60,7 @@ public final class GeniusApiClient {
 
     private JSONObject songReferentResponse(String songId) {
         try {
-            return run(baseUrl + songReferentEndpoint + songId);
+            return run(baseUrl + songReferentEndpoint + referentOptions + songId);
         }
         catch(Exception ignored) {
             return null;
@@ -117,7 +118,14 @@ public final class GeniusApiClient {
 
     public String getAnnotationText(JSONObject referent) {
         try {
+            String annotation = "";
+            JSONArray annotationList = referent.getJSONArray("annotations");
+            for (int i = 0; i < annotationList.length(); i++) {
+                annotation += annotationList.getJSONObject(i).getJSONObject("body")
+                        .getJSONObject("plain");
+            }
 
+            return annotation;
         }
         catch( Exception e ) {
             return "";
@@ -137,12 +145,16 @@ public final class GeniusApiClient {
                 continue;
             }
         }
+
+        return annotations;
     }
 
     public static void main(String[] args) throws Exception {
         GeniusApiClient geniusApiClient = new GeniusApiClient();
         String artistId = (geniusApiClient.getArtistId("Kendrick Lamar"));
         ArrayList<String> artistSongIds =  geniusApiClient.getArtistSongIds(artistId);
+
+        System.out.println(geniusApiClient.getReferentAnnotations(geniusApiClient.getSongReferents(artistSongIds.get(0))));
 
     }
 }
