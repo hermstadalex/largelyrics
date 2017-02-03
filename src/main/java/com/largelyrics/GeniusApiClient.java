@@ -1,8 +1,6 @@
 package com.largelyrics;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
@@ -121,8 +119,7 @@ public final class GeniusApiClient {
             String annotation = "";
             JSONArray annotationList = referent.getJSONArray("annotations");
             for (int i = 0; i < annotationList.length(); i++) {
-                annotation += annotationList.getJSONObject(i).getJSONObject("body")
-                        .getJSONObject("plain");
+                annotation += annotationList.getJSONObject(i).getJSONObject("body").get("plain").toString();
             }
 
             return annotation;
@@ -154,7 +151,13 @@ public final class GeniusApiClient {
         String artistId = (geniusApiClient.getArtistId("Kendrick Lamar"));
         ArrayList<String> artistSongIds =  geniusApiClient.getArtistSongIds(artistId);
 
-        System.out.println(geniusApiClient.getReferentAnnotations(geniusApiClient.getSongReferents(artistSongIds.get(0))));
+        System.out.println(artistSongIds.size());
+
+        JSONArray referents  = geniusApiClient.getSongReferents(artistSongIds.get(0));
+
+
+
+        System.out.println(geniusApiClient.getReferentAnnotations(referents));
 
     }
 }
