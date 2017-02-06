@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
+import info.debatty.java.stringsimilarity.NormalizedLevenshtein;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import 	org.apache.lucene.search.*;
 
 /**
  * Created by alex on 2/2/17.
@@ -36,6 +39,8 @@ public final class GeniusApiClient {
             return new JSONObject(response.body().string());
 
         }
+
+
     }
 
     private JSONObject artistIdResponse(String artistName) {
@@ -89,14 +94,25 @@ public final class GeniusApiClient {
     public String getArtistId(String artistName) {
 
         JSONObject response = artistIdResponse(artistName);
+        NormalizedLevenshtein l = new NormalizedLevenshtein();
 
         try {
-            return response.getJSONObject("response")
-                    .getJSONArray("hits")
-                    .getJSONObject(0)
-                    .getJSONObject("result")
-                    .getJSONObject("primary_artist")
-                    .get("id").toString();
+            JSONArray hitsArray = response.getJSONObject("response")
+                    .getJSONArray("hits");
+
+            for(int i = 0; i < hitsArray.length(); i++) {
+                JSONObject currPrimaryArtist = hitsArray.getJSONObject(i)
+                        .getJSONObject("result")
+                        .getJSONObject("primary_artist");
+
+                String currArtistName = currPrimaryArtist.get("name").toString();
+
+                if(l.distance(currArtistName, artistName) < .7) {
+                    return currPrimaryArtist.get("id").toString();
+                }
+            }
+
+            return "No artists found by this name";
         }
         catch(JSONException e) {
             return "Error has occured";
@@ -114,6 +130,12 @@ public final class GeniusApiClient {
         }
     }
 
+    /**
+     * Loops through all the annotations for a single referent, and grabs their text
+     *
+     * @param referent The referent (part of document being annotated) to grab the annotation text from
+     * @return A single string with all of the referent's annotation text.
+     */
     public String getAnnotationText(JSONObject referent) {
         try {
             String annotation = "";
@@ -129,6 +151,11 @@ public final class GeniusApiClient {
         }
     }
 
+    /**
+     *
+     * @param songReferents
+     * @return
+     */
     public ArrayList<String> getReferentAnnotations(JSONArray songReferents) {
 
         ArrayList<String> annotations = new ArrayList<String>();
@@ -148,15 +175,10 @@ public final class GeniusApiClient {
 
     public static void main(String[] args) throws Exception {
         GeniusApiClient geniusApiClient = new GeniusApiClient();
-        String artistId = (geniusApiClient.getArtistId("Kendrick Lamar"));
+        String artistId = (geniusApiClient.getArtistId("ugly duckling"));
         ArrayList<String> artistSongIds =  geniusApiClient.getArtistSongIds(artistId);
 
-        System.out.println(artistSongIds.size());
-
         JSONArray referents  = geniusApiClient.getSongReferents(artistSongIds.get(0));
-
-
-
         System.out.println(geniusApiClient.getReferentAnnotations(referents));
 
     }
