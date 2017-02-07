@@ -5,15 +5,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+
 /**
  * Created by alex on 2/6/17.
  */
 @Controller
 public class ArtistController {
 
-
-
-
+    @Autowired
+    private GeniusApiClient client;
     @Autowired
     private ArtistDao artistDao;
 
@@ -22,10 +23,15 @@ public class ArtistController {
      */
     @RequestMapping("/create")
     @ResponseBody
-    public String create(String name, String annotations, String genius_id) {
+    public String create(String name) {
         String userId = "";
         try {
-            genius_id = genius_id.replaceAll("/$", "");
+            String genius_id = client.getArtistId(name);
+
+            String annotations;
+            ArrayList<String> artistIds = client.getArtistSongIds(genius_id);
+            annotations = client.getAllSongAnnotations(artistIds, genius_id);
+
             Artist artist = new Artist(name, annotations, genius_id);
             artistDao.save(artist);
             userId = String.valueOf(artist.getId());
@@ -47,11 +53,11 @@ public class ArtistController {
         try {
             Artist artist = artistDao.findByGeniusId(genius_id);
             artistId = String.valueOf(artist.getId());
+            return artist.getAnnotations();
         }
         catch (Exception ex) {
             return "User not found";
         }
-        return "The user id is: " + artistId;
     }
 
 }

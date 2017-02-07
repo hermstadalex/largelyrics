@@ -11,16 +11,15 @@ import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-/**
- * Created by alex on 2/2/17.
- */
 @Component
-public final class GeniusApiClient {
-    private final OkHttpClient client = new OkHttpClient();
+public class GeniusApiClient {
+    private OkHttpClient client = new OkHttpClient();
 
     private final String token = "Bearer 4mfDBVzCnp2S1Fc0l0K0cfqOrQYjRrb-OHi8W1f-PPU7LNLI6-cXY2E727-1gHYR";
     private final String baseUrl = "https://api.genius.com";
@@ -31,11 +30,7 @@ public final class GeniusApiClient {
     private final String songReferentEndpoint = "/referents?";
     private final String referentOptions = "per_page=50&text_format=plain&song_id=";
 
-    @Autowired
-    private ArtistDao artistDao;
-
-
-    private final JSONObject run(String url) throws Exception {
+    private JSONObject run(String url) throws Exception {
         Request newRequest = new Request.Builder()
                 .url(url)
                 .addHeader("Authorization", token)
@@ -183,27 +178,17 @@ public final class GeniusApiClient {
 
 
     public String getAllSongAnnotations(ArrayList<String> songIds, String artistId) {
-        try {
-            String annotations = artistDao.findByGeniusId(artistId).getAnnotations();
-            return annotations;
+        GeniusApiClient geniusClient = new GeniusApiClient();
+        ArrayList<String> annotationList = new ArrayList<String>();
+
+        for (String songId : songIds) {
+            annotationList.add(geniusClient.getReferentAnnotations(geniusClient.getSongReferents(songId)));
         }
-        catch(Exception e) {
 
-            GeniusApiClient geniusClient = new GeniusApiClient();
+        String annotationString = squashAnnotationArray(annotationList);
 
-            ArrayList<String> annotationList = new ArrayList<String>();
+        return annotationString;
 
-            for (String songId : songIds) {
-                annotationList.add(geniusClient.getReferentAnnotations(geniusClient.getSongReferents(songId)));
-            }
-
-            String annotationString = squashAnnotationArray(annotationList);
-
-            Artist artist = new Artist("test name for now", annotationString, artistId);
-            System.out.println(artistDao);
-            artistDao.save(artist);
-            return annotationString;
-        }
     }
 
     public String squashAnnotationArray(ArrayList<String> annotations) {
@@ -217,16 +202,22 @@ public final class GeniusApiClient {
         return annotationString;
     }
 
-    public GeniusApiClient() {
 
-    }
-
+    /*
     public static void main(String[] args) throws Exception {
+
+        /*
         GeniusApiClient geniusApiClient = new GeniusApiClient();
         String artistId = (geniusApiClient.getArtistId("Ugly Duckling"));
         ArrayList<String> artistSongIds =  geniusApiClient.getArtistSongIds(artistId);
 
         System.out.println(geniusApiClient.getAllSongAnnotations(artistSongIds, artistId));
+
+
+        System.out.println(artistDao);
     }
+    */
+
+
 
 }
