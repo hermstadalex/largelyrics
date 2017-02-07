@@ -16,6 +16,7 @@ public class Artist {
 
     private String geniusId;
 
+    @Lob
     private String annotations;
 
     public Artist() {}

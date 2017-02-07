@@ -11,8 +11,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class ArtistController {
 
+
+
+
+    @Autowired
+    private ArtistDao artistDao;
+
     /**
-     * GET /create  --> Create a new user and save it in the database.
+     * GET /create  --> Create a new artist and save it in the database.
      */
     @RequestMapping("/create")
     @ResponseBody
@@ -30,9 +36,22 @@ public class ArtistController {
         return "User succesfully created with id = " + userId;
     }
 
-
-
-    @Autowired
-    private ArtistDao artistDao;
+    /**
+     * GET /get-by-email  --> Return the id for the user having the passed
+     * email.
+     */
+    @RequestMapping("/get")
+    @ResponseBody
+    public String getByEmail(String genius_id) {
+        String artistId = "";
+        try {
+            Artist artist = artistDao.findByGeniusId(genius_id);
+            artistId = String.valueOf(artist.getId());
+        }
+        catch (Exception ex) {
+            return "User not found";
+        }
+        return "The user id is: " + artistId;
+    }
 
 }
