@@ -12,13 +12,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import 	org.apache.lucene.search.*;
-
 /**
  * Created by alex on 2/2/17.
  */
 public final class GeniusApiClient {
     private final OkHttpClient client = new OkHttpClient();
+
     private final String token = "Bearer 4mfDBVzCnp2S1Fc0l0K0cfqOrQYjRrb-OHi8W1f-PPU7LNLI6-cXY2E727-1gHYR";
     private final String baseUrl = "https://api.genius.com";
     private final String searchEndpoint = "/search?q=";
@@ -121,6 +120,7 @@ public final class GeniusApiClient {
 
     public JSONArray getSongReferents(String songId) {
         JSONObject response = songReferentResponse(songId);
+        System.out.println(response);
         try {
             return response.getJSONObject("response")
                     .getJSONArray("referents");
@@ -156,14 +156,14 @@ public final class GeniusApiClient {
      * @param songReferents
      * @return
      */
-    public ArrayList<String> getReferentAnnotations(JSONArray songReferents) {
+    public String getReferentAnnotations(JSONArray songReferents) {
 
-        ArrayList<String> annotations = new ArrayList<String>();
+        String annotations = "";
 
         for(int i = 0; i < songReferents.length(); i++) {
             try {
                 JSONObject referent = songReferents.getJSONObject(i);
-                annotations.add(getAnnotationText(referent));
+                annotations += getAnnotationText(referent);
             }
             catch(Exception e) {
                 continue;
@@ -173,13 +173,25 @@ public final class GeniusApiClient {
         return annotations;
     }
 
+    public ArrayList<String> getAllSongAnnotations(ArrayList<String> songIds) {
+
+        GeniusApiClient geniusClient = new GeniusApiClient();
+
+        ArrayList<String> annotationList = new ArrayList<String>();
+
+        for (String songId : songIds) {
+            annotationList.add(geniusClient.getReferentAnnotations(geniusClient.getSongReferents(songId)));
+        }
+
+        return annotationList;
+    }
+
     public static void main(String[] args) throws Exception {
         GeniusApiClient geniusApiClient = new GeniusApiClient();
-        String artistId = (geniusApiClient.getArtistId("ugly duckling"));
+        String artistId = (geniusApiClient.getArtistId("Ugly Duckling"));
         ArrayList<String> artistSongIds =  geniusApiClient.getArtistSongIds(artistId);
 
-        JSONArray referents  = geniusApiClient.getSongReferents(artistSongIds.get(0));
-        System.out.println(geniusApiClient.getReferentAnnotations(referents));
+        System.out.println(geniusApiClient.getAllSongAnnotations(artistSongIds));
 
     }
 }
