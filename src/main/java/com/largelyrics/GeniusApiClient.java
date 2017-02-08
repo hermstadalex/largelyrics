@@ -159,7 +159,7 @@ public class GeniusApiClient {
      * @param songReferents
      * @return
      */
-    public String getReferentAnnotations(JSONArray songReferents) {
+    private String getReferentAnnotations(JSONArray songReferents) {
 
         String annotations = "";
 
@@ -191,7 +191,7 @@ public class GeniusApiClient {
 
     }
 
-    public String squashAnnotationArray(ArrayList<String> annotations) {
+    private String squashAnnotationArray(ArrayList<String> annotations) {
 
         String annotationString = "";
 
@@ -201,23 +201,4 @@ public class GeniusApiClient {
 
         return annotationString;
     }
-
-
-    /*
-    public static void main(String[] args) throws Exception {
-
-        /*
-        GeniusApiClient geniusApiClient = new GeniusApiClient();
-        String artistId = (geniusApiClient.getArtistId("Ugly Duckling"));
-        ArrayList<String> artistSongIds =  geniusApiClient.getArtistSongIds(artistId);
-
-        System.out.println(geniusApiClient.getAllSongAnnotations(artistSongIds, artistId));
-
-
-        System.out.println(artistDao);
-    }
-    */
-
-
-
 }
