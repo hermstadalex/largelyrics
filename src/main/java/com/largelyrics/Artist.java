@@ -31,15 +31,12 @@ public class Artist {
     public String getName() {
         return name;
     }
-
     public String getAnnotations() {
         return annotations;
     }
-
     public String getGeniusId() {
         return geniusId;
     }
-
     public long getId() {
         return id;
     }

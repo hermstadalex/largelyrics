@@ -41,8 +41,6 @@ public class GeniusApiClient {
             return new JSONObject(response.body().string());
 
         }
-
-
     }
 
     private JSONObject artistIdResponse(String artistName) {
