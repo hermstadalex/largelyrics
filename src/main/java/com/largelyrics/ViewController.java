@@ -56,8 +56,7 @@ public class ViewController {
      * GET /create  --> Create a new artist and save it in the database.
      */
     @RequestMapping("/")
-    @ResponseBody
     public String index() {
-        return "Index";
+        return "index";
     }
 }
