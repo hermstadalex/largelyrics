@@ -20,12 +20,16 @@ public class Artist {
     @Lob
     private String annotations;
 
+    @Lob
+    private String lyrics;
+
     public Artist() {}
 
-    public Artist(String name, String annotations, String geniusId) {
+    public Artist(String name, String annotations, String geniusId, String lyrics) {
         this.name = name;
         this.annotations = annotations;
         this.geniusId = geniusId;
+        this.lyrics = lyrics;
     }
 
     public String getName() {
@@ -40,4 +44,5 @@ public class Artist {
     public long getId() {
         return id;
     }
+    public String getLyrics() {return lyrics;}
 }

@@ -28,28 +28,32 @@ public class ViewController {
     public String artist(String name, Model model) {
         String userId = "";
         String genius_id = client.getArtistId(name);
+        Artist artist;
 
         try {
-            Artist artist = artistDao.findByGeniusId(genius_id);
-
+            artist = artistDao.findByGeniusId(genius_id);
             model.addAttribute("annotations", artist.getAnnotations());
+            model.addAttribute("lyrics", artist.getLyrics());
             model.addAttribute("name", artist.getName());
-
-            return "artist";
         }
         catch (Exception ex) {
             String annotations;
+            String lyrics;
             ArrayList<String> artistIds = client.getArtistSongIds(genius_id);
             annotations = client.getAllSongAnnotations(artistIds, genius_id);
+            lyrics = client.getLyrics(name);
 
-            Artist artist = new Artist(name, annotations, genius_id);
+            artist = new Artist(name, annotations, genius_id, lyrics);
             artistDao.save(artist);
 
-            model.addAttribute("annotations", annotations);
+            model.addAttribute("annotations", artist.getAnnotations());
+            model.addAttribute("lyrics", artist.getLyrics());
             model.addAttribute("name", artist.getName());
-
-            return "artist";
         }
+
+
+
+        return "artist";
     }
 
     /**

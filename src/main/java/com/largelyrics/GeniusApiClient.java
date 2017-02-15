@@ -3,11 +3,16 @@ package com.largelyrics;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import info.debatty.java.stringsimilarity.NormalizedLevenshtein;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.jmusixmatch.MusixMatch;
+import org.jmusixmatch.entity.lyrics.Lyrics;
+import org.jmusixmatch.entity.track.Track;
+import org.jmusixmatch.entity.track.TrackData;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +34,11 @@ public class GeniusApiClient {
     private final int songsPerPage = 50;
     private final String songReferentEndpoint = "/referents?";
     private final String referentOptions = "per_page=50&text_format=plain&song_id=";
+
+    String apiKey = "53c65c0a77cf4eea65ca3373d2626ee1";
+    MusixMatch musixMatch = new MusixMatch(apiKey);
+
+
 
     private JSONObject run(String url) throws Exception {
         Request newRequest = new Request.Builder()
@@ -121,7 +131,6 @@ public class GeniusApiClient {
 
     public JSONArray getSongReferents(String songId) {
         JSONObject response = songReferentResponse(songId);
-        System.out.println(response);
         try {
             return response.getJSONObject("response")
                     .getJSONArray("referents");
@@ -149,6 +158,31 @@ public class GeniusApiClient {
         }
         catch( Exception e ) {
             return "";
+        }
+    }
+
+    public String getLyrics(String artistName) {
+        try {
+            List<Track> tracks = musixMatch.searchTracks("", artistName, "", 1, 200, true);
+
+            String lyricsStr = "";
+
+            for (Track trk : tracks) {
+                TrackData trkData = trk.getTrack();
+                int id = trkData.getTrackId();
+
+                Lyrics lyrics = musixMatch.getLyrics(id);
+                lyricsStr += lyrics.getLyricsBody();
+
+            }
+
+            System.out.println(lyricsStr);
+
+            return lyricsStr;
+
+        }
+        catch( Exception e ) {
+            return "Failed call";
         }
     }
 

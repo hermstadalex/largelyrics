@@ -5,24 +5,47 @@
     <title>Title</title>
 </head>
 <body>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="http://dl.dropboxusercontent.com/u/67252270/d3-cloud/d3.min.js"></script>
-    <script src="http://dl.dropboxusercontent.com/u/67252270/d3-cloud/d3.layout.cloud.js"></script>
-    <script type="text/javascript" th:src="@{/words.js}"></script>
+    <div class="container-fluid">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="http://dl.dropboxusercontent.com/u/67252270/d3-cloud/d3.min.js"></script>
+        <script src="http://dl.dropboxusercontent.com/u/67252270/d3-cloud/d3.layout.cloud.js"></script>
+        <script type="text/javascript" th:src = "@{/bower_components/easyd3/wordcloud/easywordcloud.js}"></script>
+        <script type="text/javascript" th:src="@{/text2wordmap.js}"></script>
+        <link rel="stylesheet" href="../static/bootstrap.css" th:href="@{/bootstrap.css}"/>
+        <link rel="stylesheet" href="../static/style.css" th:href="@{/style.css}"/>
 
+        <script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+            var artistName = /*[[${name}]]*/;
+            var words = /*[[${annotations}]]*/;
+            var lyrics = /*[[${lyrics}]]*/;
+            /*]]>*/
+        </script>
 
-    <script type="text/javascript" th:inline="javascript">
-        /*<![CDATA[*/
-        var artistName = /*[[${name}]]*/;
-        var words = /*[[${annotations}]]*/;
-        /*]]>*/
-    </script>
+        <!--
+        <div class="row clouds">
+            <div class="col-sm-6">
+                <div class="cloud1"></div>
+            </div>
+            <div class="col-sm-6">
+                <div class="cloud2"></div>
+            </div>
+        </div>
+        -->
+        <div class="cloud1"></div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <div class="cloud2"></div>
 
+        <script type="text/javascript" th:src="@{/cloud.js}"></script>
 
+        <form action="/artist/" method="get">
+            <input maxlength="100" name="name" type="text" />
+            <input type="submit" value="Search"/>
+        </form>
 
-    <script type="text/javascript" th:src = "@{/bower_components/easyd3/wordcloud/easywordcloud.js}"></script>
-
-    <script type="text/javascript" th:src="@{/text2wordmap.js}"></script>
-    <script type="text/javascript" th:src="@{/cloud.js}"></script>
+    </div>
 </body>
 </html>
