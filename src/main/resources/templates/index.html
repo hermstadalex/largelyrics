@@ -6,10 +6,15 @@
 </head>
 <body>
 <div class="container-fluid">
-    <form action="/artist/" method="get">
-        <input maxlength="100" name="name" type="text" />
-        <input type="submit" value="Search"/>
-    </form>
+    <div class="center-div">
+        <form action="/artist" class="form-inline">
+            <div class="form-group">
+                <label for="exampleInputName2">Artist Name</label>
+                <input name="name" type="text" class="form-control" id="exampleInputName2" placeholder="Kendrick Lamar"></input>
+            </div>
+            <button type="submit" class="btn btn-default">Search</button>
+        </form>
+    </div>
 </div>
 </body>
 </html>

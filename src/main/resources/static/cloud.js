@@ -29,7 +29,7 @@ $().ready(function(){
     var my_color = d3.scale.category20();
     var href_func = function(d){  }
 
-    window.makeWordCloud(wordFreqAnnotations.slice(0,80), href_func, "div.cloud1", 800, "my_svg", "Impact", true, my_color)
-    window.makeWordCloud(wordFreqLyrics.slice(0,80), href_func, "div.cloud2", 800, "my_svg2", "Impact", true, my_color)
+    window.makeWordCloud(wordFreqAnnotations.slice(0,80), href_func, "div.cloud1", 700, "my_svg", "Impact", true, my_color)
+    window.makeWordCloud(wordFreqLyrics.slice(0,80), href_func, "div.cloud2", 700, "my_svg2", "Impact", true, my_color)
     $(document).attr("title", artistName.charAt(0).toUpperCase() + artistName.slice(1) );
 })
