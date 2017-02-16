@@ -1,0 +1,21 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>LargeLyrics</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var workerPath = /*[[@{/wordfreq/src/wordfreq.worker.js}]]*/;
+        /*]]>*/
+    </script>
+
+    <script type="text/javascript" th:src="@{/wordfreq/src/wordfreq.worker.js}"></script>
+    <script type="text/javascript" th:src="@{/wordfreq/src/wordfreq.js}"></script>
+    <script type="text/javascript" th:src="@{/wordCount.js}"></script>
+</head>
+<body>
+</body>
+</html>
