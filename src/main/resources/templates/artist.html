@@ -16,18 +16,6 @@
         <script type="text/javascript" th:src="@{/wordfreq/src/wordfreq.worker.js}"></script>
         <script type="text/javascript" th:src="@{/wordfreq/src/wordfreq.js}"></script>
 
-        <div class="center-div">
-            <form action="/artist" class="form-inline">
-                <div class="form-group">
-                    <label for="exampleInputName2">Artist Name</label>
-                    <input name="name" type="text" class="form-control" id="exampleInputName2" placeholder="Kendrick Lamar"></input>
-                </div>
-                <button type="submit" class="btn btn-default">Search</button>
-            </form>
-        </div>
-
-
-
         <script type="text/javascript" th:inline="javascript">
             /*<![CDATA[*/
             var artistName = /*[[${name}]]*/;
@@ -36,6 +24,20 @@
             var workerPath = /*[[@{/wordfreq/src/wordfreq.worker.js}]]*/;
             /*]]>*/
         </script>
+
+        <div class="center-div">
+            <form action="/artist" class="form-inline">
+                <div class="form-group">
+                    <label for="exampleInputName2">Artist Name</label>
+                    <input name="name" type="text" class="form-control" id="exampleInputName2" placeholder=""></input>
+                </div>
+                <button type="submit" class="btn btn-default">Search</button>
+            </form>
+        </div>
+
+
+
+
 
         <h1 class="lead text-center">Annotations</h1>
         <div class="cloud1"></div>

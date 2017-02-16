@@ -32,6 +32,9 @@ public class ViewController {
 
         try {
             artist = artistDao.findByGeniusId(genius_id);
+            if(artist.getAnnotations() == null || artist.getLyrics() == null || artist == null ) {
+                throw new IndexOutOfBoundsException();
+            }
             model.addAttribute("annotations", artist.getAnnotations());
             model.addAttribute("lyrics", artist.getLyrics());
             model.addAttribute("name", artist.getName());
