@@ -9,6 +9,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <script src="http://dl.dropboxusercontent.com/u/67252270/d3-cloud/d3.min.js"></script>
         <script src="http://dl.dropboxusercontent.com/u/67252270/d3-cloud/d3.layout.cloud.js"></script>
+        <script type="text/javascript" th:src="@{/wordcloud2.js}"></script>
         <script type="text/javascript" th:src = "@{/bower_components/easyd3/wordcloud/easywordcloud.js}"></script>
         <script type="text/javascript" th:src="@{/text2wordmap.js}"></script>
         <link rel="stylesheet" href="../static/bootstrap.css" th:href="@{/bootstrap.css}"/>
@@ -35,17 +36,16 @@
             </form>
         </div>
 
-
-
-
+        <h1 class="lead text-center">Lyrics</h1>
+        <canvas width="850" height="500" id="lyric-canvas" class="cloud1"></canvas>
 
         <h1 class="lead text-center">Annotations</h1>
-        <div class="cloud1"></div>
-
-        <h1 class="lead text-center">Lyrics</h1>
-        <div class="cloud2"></div>
-
-        <script type="text/javascript" th:src="@{/cloud.js}"></script>
+        <canvas width="850" height="700" id="annotation-canvas" class="cloud1"></canvas>
     </div>
+
+
+
+    <script type="text/javascript" th:src="@{/cloud.js}"></script>
+
 </body>
 </html>

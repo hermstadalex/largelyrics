@@ -164,15 +164,20 @@ public class GeniusApiClient {
     public String getLyrics(String artistName) {
         try {
             List<Track> tracks = musixMatch.searchTracks("", artistName, "", 1, 200, true);
-
             String lyricsStr = "";
 
             for (Track trk : tracks) {
-                TrackData trkData = trk.getTrack();
-                int id = trkData.getTrackId();
+                try {
+                    TrackData trkData = trk.getTrack();
 
-                Lyrics lyrics = musixMatch.getLyrics(id);
-                lyricsStr += lyrics.getLyricsBody();
+                    int id = trkData.getTrackId();
+
+                    Lyrics lyrics = musixMatch.getLyrics(id);
+                    lyricsStr += lyrics.getLyricsBody();
+                }
+                catch(Exception e) {
+                    continue;
+                }
 
             }
 
@@ -181,7 +186,7 @@ public class GeniusApiClient {
             return lyricsStr;
 
         }
-        catch( Exception e ) {
+        catch(Exception e) {
             return "Failed call";
         }
     }
