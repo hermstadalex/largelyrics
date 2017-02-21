@@ -55,6 +55,7 @@ public class GeniusApiClient {
 
     private JSONObject artistIdResponse(String artistName) {
         try {
+            System.out.println(artistName);
             return run(baseUrl + searchEndpoint + URLEncoder.encode(artistName, "UTF-8"));
         }
         catch(Exception ignored) {
@@ -104,6 +105,7 @@ public class GeniusApiClient {
     public String getArtistId(String artistName) {
 
         JSONObject response = artistIdResponse(artistName);
+
         NormalizedLevenshtein l = new NormalizedLevenshtein();
 
         try {
@@ -116,6 +118,8 @@ public class GeniusApiClient {
                         .getJSONObject("primary_artist");
 
                 String currArtistName = currPrimaryArtist.get("name").toString();
+
+                System.out.println(currArtistName);
 
                 if(l.distance(currArtistName, artistName) < .7) {
                     return currPrimaryArtist.get("id").toString();

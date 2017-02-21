@@ -35,7 +35,8 @@ $().ready(function(){
             shape: 'circle',
             list: wordFreqLyrics,
             drawOutOfBound: true,
-            minSize: minSize
+            minSize: minSize,
+            backgroundColor: '#F8F8FF'
         }
 
         WordCloud(document.getElementById('lyric-canvas'), lyricOptions );
@@ -57,7 +58,8 @@ $().ready(function(){
         shape: 'circle',
         list: wordFreqAnnotations.slice(0,200),
         drawOutOfBound: true,
-        minSize: minSize
+        minSize: minSize,
+        backgroundColor: '#F8F8FF'
     }
 
     WordCloud(document.getElementById('annotation-canvas'), annotationOptions );

@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8"/>
     <title>LargeLyrics</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="../static/bootstrap.css" th:href="@{/bootstrap.css}"/>
+    <link rel="stylesheet" href="../static/style.css" th:href="@{/style.css}"/>
 </head>
 <body>
 <div class="container-fluid">
+
+    <img th:src="@{/logo.png}" class="img-responsive logo"/>
+
     <div class="center-div">
         <form action="/artist" class="form-inline">
             <div class="form-group">
