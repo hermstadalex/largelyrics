@@ -107,11 +107,20 @@ function normalizeValue(wordCount) {
     else if(wordCount > 1100 && wordCount < 1600) {
         normalizeFactor = 1.5;
     }
-    else if(wordCount > 1600 && wordCount < 2000) {
+    else if(wordCount > 1600 && wordCount < 1800) {
         normalizeFactor = 2;
     }
-    else if(wordCount > 1800 && wordCount < 2500 ) {
-        normalizeFactor = 3;
+    else if(wordCount > 1800 && wordCount < 2100 ) {
+        normalizeFactor = 2.5;
+    }
+    else if(wordCount > 2100 && wordCount < 2500 ) {
+        normalizeFactor = 2.8;
+    }
+    else if(wordCount > 2500 && wordCount < 2900) {
+        normalizeFactor = 3.3;
+    }
+    else {
+        normalizeFactor = 3.7;
     }
 
     return normalizeFactor;

@@ -34,9 +34,14 @@ public class ViewController {
 
             artist = artistDao.findByGeniusId(genius_id);
 
-            if(artist.getAnnotations() == null || artist.getLyrics() == null || artist == null ) {
+            if(artist.getAnnotations() == null || artist.getLyrics() == null || artist.getLyrics().equals("") ||  artist == null ) {
+                artistDao.delete(artist);
+
                 throw new IndexOutOfBoundsException();
             }
+
+            System.out.println("Lyrics: " + artist.getLyrics());
+
             model.addAttribute("annotations", artist.getAnnotations());
             model.addAttribute("lyrics", artist.getLyrics());
             model.addAttribute("name", artist.getName());
@@ -45,6 +50,7 @@ public class ViewController {
             System.out.println(ex);
             String annotations;
             String lyrics;
+
             ArrayList<String> artistIds = client.getArtistSongIds(genius_id);
             annotations = client.getAllSongAnnotations(artistIds, genius_id);
             lyrics = client.getLyrics(name);

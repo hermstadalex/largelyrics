@@ -35,7 +35,7 @@ public class GeniusApiClient {
     private final String songReferentEndpoint = "/referents?";
     private final String referentOptions = "per_page=50&text_format=plain&song_id=";
 
-    String apiKey = "53c65c0a77cf4eea65ca3373d2626ee1";
+    String apiKey = "e7344163d32efb5558f76b363c713bfd";
     MusixMatch musixMatch = new MusixMatch(apiKey);
 
 
