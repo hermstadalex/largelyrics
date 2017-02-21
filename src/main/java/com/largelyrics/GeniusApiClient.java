@@ -162,9 +162,11 @@ public class GeniusApiClient {
     }
 
     public String getLyrics(String artistName) {
+
+        String lyricsStr = "";
+
         try {
             List<Track> tracks = musixMatch.searchTracks("", artistName, "", 1, 200, true);
-            String lyricsStr = "";
 
             for (Track trk : tracks) {
                 try {
@@ -181,13 +183,11 @@ public class GeniusApiClient {
 
             }
 
-            System.out.println(lyricsStr);
-
             return lyricsStr;
 
         }
         catch(Exception e) {
-            return "Failed call";
+            return lyricsStr;
         }
     }
 

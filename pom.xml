@@ -25,6 +25,9 @@
 	</properties>
 
 	<dependencies>
+
+
+
 		<dependency>
 			<groupId>com.sachinhandiekar</groupId>
 			<artifactId>jMusixMatch</artifactId>
