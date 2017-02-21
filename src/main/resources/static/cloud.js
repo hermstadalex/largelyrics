@@ -98,10 +98,13 @@ function normalizeValue(wordCount) {
     else if(wordCount > 400 && wordCount < 500) {
         normalizeFactor = .8;
     }
-    else if(wordCount > 500 && wordCount < 900) {
+    else if(wordCount > 500 && wordCount < 800) {
         normalizeFactor = 1;
     }
-    else if(wordCount > 900 && wordCount < 1200) {
+    else if(wordCount > 800 && wordCount < 1100) {
+        normalizeFactor = 1.2;
+    }
+    else if(wordCount > 1100 && wordCount < 1600) {
         normalizeFactor = 1.5;
     }
     else if(wordCount > 1600 && wordCount < 2000) {
