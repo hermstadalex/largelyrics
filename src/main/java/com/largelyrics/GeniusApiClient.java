@@ -126,7 +126,7 @@ public class GeniusApiClient {
                 }
             }
 
-            return "No artists found by this name";
+            return "";
         }
         catch(JSONException e) {
             return "Error has occured";

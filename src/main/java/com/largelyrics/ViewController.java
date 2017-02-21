@@ -27,20 +27,25 @@ public class ViewController {
     @RequestMapping("/artist")
     public String artist(String name, Model model) {
         String userId = "";
-        String genius_id = client.getArtistId(name);
+        String genius_id;
+
+        genius_id = client.getArtistId(name);
+
+        if(genius_id.equals("")) {
+            return "notfound";
+        }
+
         Artist artist;
 
         try {
 
             artist = artistDao.findByGeniusId(genius_id);
 
-            if(artist.getAnnotations() == null || artist.getLyrics() == null || artist.getLyrics().equals("") ||  artist == null ) {
+            if(artist.getAnnotations() == null || artist.getLyrics() == null || artist.getLyrics().equals("")) {
                 artistDao.delete(artist);
 
                 throw new IndexOutOfBoundsException();
             }
-
-            System.out.println("Lyrics: " + artist.getLyrics());
 
             model.addAttribute("annotations", artist.getAnnotations());
             model.addAttribute("lyrics", artist.getLyrics());
