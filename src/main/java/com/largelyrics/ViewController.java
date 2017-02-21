@@ -31,7 +31,9 @@ public class ViewController {
         Artist artist;
 
         try {
+
             artist = artistDao.findByGeniusId(genius_id);
+
             if(artist.getAnnotations() == null || artist.getLyrics() == null || artist == null ) {
                 throw new IndexOutOfBoundsException();
             }
@@ -40,6 +42,7 @@ public class ViewController {
             model.addAttribute("name", artist.getName());
         }
         catch (Exception ex) {
+            System.out.println(ex);
             String annotations;
             String lyrics;
             ArrayList<String> artistIds = client.getArtistSongIds(genius_id);

@@ -18,30 +18,14 @@ $().ready(function(){
     var minSize = 10;
     var normalizeFactor = 1;
 
-    console.log(wordFreqAnnotations[0][1]);
 
     if(typeof wordFreqLyrics[0] !== 'undefined') {
-        console.log(wordFreqLyrics[0][1]);
 
+        console.log("Lyric word count: " + totalWordCount(wordFreqLyrics));
 
-        if (wordFreqLyrics[0][1] < 100) {
-            normalizeFactor = .5;
-        }
-        else if (wordFreqLyrics[0][1] > 200 && wordFreqLyrics[0][1] < 300) {
-            normalizeFactor = 1;
-        }
-        else if (wordFreqLyrics[0][1] > 200 && wordFreqLyrics[0][1] < 300) {
-            normalizeFactor = 2;
-        }
-        else if (wordFreqLyrics[0][1] > 400 && wordFreqLyrics[0][1] < 450) {
-            normalizeFactor = 2.3;
-        }
-        else if (wordFreqLyrics[0][1] > 450 && wordFreqLyrics[0][1] < 500) {
-            normalizeFactor = 4;
-        }
-        else if (wordFreqLyrics[0][1] > 600) {
-            normalizeFactor = 4;
-        }
+        normalizeFactor = normalizeValue(totalWordCount(wordFreqLyrics));
+
+        console.log("Lyric normalize factor: " + normalizeFactor);
 
         wordFreqLyrics = wordFreqLyrics.map(function (item) {
             return [item[0], [item[1] / normalizeFactor]];
@@ -59,21 +43,11 @@ $().ready(function(){
 
     normalizeFactor = 1;
 
-    if (wordFreqAnnotations[0][1] < 50) {
-        normalizeFactor = .1;
-    }
-    else if(wordFreqAnnotations[0][1] > 200 && wordFreqAnnotations[0][1] < 300) {
-        normalizeFactor = 1.5;
-    }
-    else if(wordFreqAnnotations[0][1] > 200 && wordFreqAnnotations[0][1] < 300) {
-        normalizeFactor = 3;
-    }
-    else if(wordFreqAnnotations[0][1] > 400 && wordFreqAnnotations[0][1] < 500) {
-        normalizeFactor = 3;
-    }
-    else if(wordFreqAnnotations[0][1] > 600 ) {
-        normalizeFactor = 4;
-    }
+    console.log("Annotation word count: " + totalWordCount(wordFreqAnnotations));
+
+    normalizeFactor = normalizeValue(totalWordCount(wordFreqAnnotations));
+
+    console.log("Annotation normalize factor: " + normalizeFactor);
 
     wordFreqAnnotations = wordFreqAnnotations.map(function(item) {
         return [item[0], [item[1]/normalizeFactor]];
@@ -90,3 +64,50 @@ $().ready(function(){
 
     $(document).attr("title", artistName.charAt(0).toUpperCase() + artistName.slice(1) );
 })
+
+function totalWordCount(wordArray) {
+
+    shortendedWordArray = wordArray.slice(0,10);
+
+    totalValue = shortendedWordArray.reduce(function(prev, current) {
+        return prev + current[1];
+    }, 0)
+
+    return totalValue
+}
+
+function normalizeValue(wordCount) {
+
+    var normalizeFactor = 1;
+
+
+    if (wordCount < 100) {
+        normalizeFactor = .1;
+    }
+    else if(wordCount > 100 && wordCount < 200) {
+        normalizeFactor = .2;
+    }
+    else if(wordCount > 200 && wordCount < 300) {
+        normalizeFactor = .4;
+    }
+    else if(wordCount > 300 && wordCount < 400) {
+        normalizeFactor = .5;
+    }
+    else if(wordCount > 400 && wordCount < 500) {
+        normalizeFactor = .8;
+    }
+    else if(wordCount > 500 && wordCount < 900) {
+        normalizeFactor = 1;
+    }
+    else if(wordCount > 900 && wordCount < 1200) {
+        normalizeFactor = 1.5;
+    }
+    else if(wordCount > 1600 && wordCount < 2000) {
+        normalizeFactor = 2;
+    }
+    else if(wordCount > 1800 && wordCount < 2500 ) {
+        normalizeFactor = 3;
+    }
+
+    return normalizeFactor;
+}
