@@ -18,11 +18,6 @@ $().ready(function(){
     var minSize = 10;
     var normalizeFactor = 1;
 
-    console.log(wordFreqAnnotations)
-    console.log(wordFreqLyrics)
-
-    console.log(lyrics);
-
     console.log(wordFreqAnnotations[0][1]);
 
     if(typeof wordFreqLyrics[0] !== 'undefined') {
