@@ -25,7 +25,7 @@ public class ViewController {
      * GET /create  --> Create a new artist and save it in the database.
      */
     @RequestMapping("/artist")
-    public String artist(String name, Model model) {
+    public String artist(String name, Model model) throws Exception {
         String userId = "";
         String genius_id;
 

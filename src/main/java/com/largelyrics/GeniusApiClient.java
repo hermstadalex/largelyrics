@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import info.debatty.java.stringsimilarity.NormalizedLevenshtein;
 import okhttp3.OkHttpClient;
@@ -19,10 +20,14 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Component
+
+@Service
+@EnableAsync
 public class GeniusApiClient {
     private OkHttpClient client = new OkHttpClient();
 
@@ -38,8 +43,6 @@ public class GeniusApiClient {
     String apiKey = "e7344163d32efb5558f76b363c713bfd";
     MusixMatch musixMatch = new MusixMatch(apiKey);
 
-
-
     private JSONObject run(String url) throws Exception {
         Request newRequest = new Request.Builder()
                 .url(url)
@@ -51,6 +54,24 @@ public class GeniusApiClient {
             return new JSONObject(response.body().string());
 
         }
+    }
+
+    @Async
+    private CompletableFuture runAsync(String url) throws Exception {
+
+        JSONObject result;
+
+        Request newRequest = new Request.Builder()
+                .url(url)
+                .addHeader("Authorization", token)
+                .build();
+
+        try (Response response = client.newCall(newRequest).execute()) {
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+            result = new JSONObject(response.body().string());
+        }
+
+        return CompletableFuture.completedFuture(result);
     }
 
     private JSONObject artistIdResponse(String artistName) {
@@ -72,9 +93,9 @@ public class GeniusApiClient {
         }
     }
 
-    private JSONObject songReferentResponse(String songId) {
+    private CompletableFuture songReferentResponse(String songId) {
         try {
-            return run(baseUrl + songReferentEndpoint + referentOptions + songId);
+            return runAsync(baseUrl + songReferentEndpoint + referentOptions + songId);
         }
         catch(Exception ignored) {
             return null;
@@ -133,8 +154,27 @@ public class GeniusApiClient {
         }
     }
 
-    public JSONArray getSongReferents(String songId) {
-        JSONObject response = songReferentResponse(songId);
+    public ArrayList<JSONArray> getAllSongReferents(ArrayList<String> songIds) throws Exception {
+        ArrayList<CompletableFuture> referentResponses = new ArrayList<CompletableFuture>();
+
+        ArrayList<JSONArray> songReferents = new ArrayList<JSONArray>();
+
+        for(String songId: songIds) {
+            referentResponses.add(songReferentResponse(songId));
+        }
+
+        CompletableFuture[] completableFutures = referentResponses.toArray(new CompletableFuture[referentResponses.size()]);
+
+        CompletableFuture.allOf(completableFutures).join();
+
+        for(int i = 0; i < completableFutures.length; i++) {
+            songReferents.add(getSongReferents((JSONObject) completableFutures[i].get()));
+        }
+
+        return songReferents;
+    }
+
+    public JSONArray getSongReferents(JSONObject response) {
         try {
             return response.getJSONObject("response")
                     .getJSONArray("referents");
@@ -218,12 +258,15 @@ public class GeniusApiClient {
     }
 
 
-    public String getAllSongAnnotations(ArrayList<String> songIds, String artistId) {
+    public String getAllSongAnnotations(ArrayList<String> songIds, String artistId) throws Exception {
+
         GeniusApiClient geniusClient = new GeniusApiClient();
         ArrayList<String> annotationList = new ArrayList<String>();
 
-        for (String songId : songIds) {
-            annotationList.add(geniusClient.getReferentAnnotations(geniusClient.getSongReferents(songId)));
+        ArrayList<JSONArray> allSongReferents = getAllSongReferents(songIds);
+
+        for(JSONArray songReferent: allSongReferents) {
+            annotationList.add(getReferentAnnotations(songReferent));
         }
 
         String annotationString = squashAnnotationArray(annotationList);
