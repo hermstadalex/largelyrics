@@ -52,7 +52,6 @@ public class ViewController {
             model.addAttribute("name", artist.getName());
         }
         catch (Exception ex) {
-            System.out.println(ex);
             String annotations;
             String lyrics;
 
@@ -67,8 +66,6 @@ public class ViewController {
             model.addAttribute("lyrics", artist.getLyrics());
             model.addAttribute("name", artist.getName());
         }
-
-
 
         return "artist";
     }

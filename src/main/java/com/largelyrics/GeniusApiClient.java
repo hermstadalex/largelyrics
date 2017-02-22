@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import info.debatty.java.stringsimilarity.NormalizedLevenshtein;
+import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -59,24 +60,21 @@ public class GeniusApiClient {
     @Async
     private CompletableFuture runAsync(String url) throws Exception {
 
-        JSONObject result;
-
-        Request newRequest = new Request.Builder()
+        Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Authorization", token)
                 .build();
 
-        try (Response response = client.newCall(newRequest).execute()) {
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-            result = new JSONObject(response.body().string());
-        }
+        Call call = client.newCall(request);
 
-        return CompletableFuture.completedFuture(result);
+        OkHttpResponseFuture result = new OkHttpResponseFuture();
+        call.enqueue(result);
+
+        return result.future;
     }
 
     private JSONObject artistIdResponse(String artistName) {
         try {
-            System.out.println(artistName);
             return run(baseUrl + searchEndpoint + URLEncoder.encode(artistName, "UTF-8"));
         }
         catch(Exception ignored) {
@@ -93,6 +91,7 @@ public class GeniusApiClient {
         }
     }
 
+    @Async
     private CompletableFuture songReferentResponse(String songId) {
         try {
             return runAsync(baseUrl + songReferentEndpoint + referentOptions + songId);
@@ -140,8 +139,6 @@ public class GeniusApiClient {
 
                 String currArtistName = currPrimaryArtist.get("name").toString();
 
-                System.out.println(currArtistName);
-
                 if(l.distance(currArtistName, artistName) < .7) {
                     return currPrimaryArtist.get("id").toString();
                 }
@@ -154,6 +151,7 @@ public class GeniusApiClient {
         }
     }
 
+    @Async
     public ArrayList<JSONArray> getAllSongReferents(ArrayList<String> songIds) throws Exception {
         ArrayList<CompletableFuture> referentResponses = new ArrayList<CompletableFuture>();
 
@@ -167,8 +165,10 @@ public class GeniusApiClient {
 
         CompletableFuture.allOf(completableFutures).join();
 
+
         for(int i = 0; i < completableFutures.length; i++) {
-            songReferents.add(getSongReferents((JSONObject) completableFutures[i].get()));
+            Response response = (Response) completableFutures[i].get();
+            songReferents.add(getSongReferents( new JSONObject(response.body().string())));
         }
 
         return songReferents;
@@ -268,6 +268,7 @@ public class GeniusApiClient {
         for(JSONArray songReferent: allSongReferents) {
             annotationList.add(getReferentAnnotations(songReferent));
         }
+
 
         String annotationString = squashAnnotationArray(annotationList);
 
